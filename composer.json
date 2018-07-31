@@ -1,0 +1,18 @@
+{
+    "name": "chapterzero/driver",
+    "authors": [
+        {
+            "name": "Yusuf Irwandi",
+            "email": "yusuf.irwandi@olx.co.id"
+        }
+    ],
+    "require": {
+        "chapterzero/package-a": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/chapterzero/package-a"
+        }
+    ]
+}
