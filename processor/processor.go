@@ -5,7 +5,7 @@ import (
 	"github.com/chapterzero/gomposer/composer"
 )
 
-func Process(composerJson composer.ComposerJson) {
+func Process(composerJson composer.ComposerJson, vendorDirectory string) {
 	// loop require key
 	for fqPackageName, fqVersionName := range composerJson.Require {
 		// resolve repository
@@ -21,7 +21,7 @@ func Process(composerJson composer.ComposerJson) {
 			continue
 		}
 
-		log.Println(provider.GetApiUrl(fqPackageName))
-		log.Println(version)
+		composerJson := provider.GetComposerJson(fqPackageName, version.Value)
+		log.Println(composerJson)
 	}
 }

@@ -11,6 +11,7 @@ import (
 )
 
 const ComposerFile = "composer.json"
+const VendorDirectory = "govendor"
 
 func main() {
 	composerJson, err := readFile()
@@ -18,7 +19,7 @@ func main() {
 		log.Fatalln("Error when reading composer.json file:", err)
 	}
 
-	processor.Process(composerJson)
+	processor.Process(composerJson, VendorDirectory)
 }
 
 func readFile() (composer.ComposerJson, error) {
