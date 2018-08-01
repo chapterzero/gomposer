@@ -2,18 +2,20 @@ package provider
 
 const baseUrl = "https://api.github.com/repos";
 
-func GetApiUrl(packageName String) (string) {
+type Github struct {}
+
+func (g Github) GetApiUrl(packageName string) (string) {
 	return baseUrl + "/" + packageName
 }
 
-func GetCommitsUrl(packageName String, sha String) (string) {
-	return GetApiUrl(packageName) + "/commits/" + sha
+func (g Github) GetCommitsUrl(packageName string, sha string) (string) {
+	return g.GetApiUrl(packageName) + "/commits/" + sha
 }
 
-func GetBranchUrl(packageName String, branchName String) (string) {
-	return GetApiUrl(packageName) + "/branches/" + branchName
+func (g Github) GetBranchesUrl(packageName string, branchName string) (string) {
+	return g.GetApiUrl(packageName) + "/branches/" + branchName
 }
 
-func GetTagsUrl(packageName String) (string) {
-	return GetApiUrl(packageName) + "/tags"
+func (g Github) GetTagsUrl(packageName string) (string) {
+	return g.GetApiUrl(packageName) + "/tags"
 }

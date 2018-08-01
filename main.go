@@ -7,6 +7,7 @@ import (
 	"os"
 	"encoding/json"
 	"github.com/chapterzero/gomposer/composer"
+	"github.com/chapterzero/gomposer/processor"
 )
 
 const ComposerFile = "composer.json"
@@ -14,10 +15,10 @@ const ComposerFile = "composer.json"
 func main() {
 	composerJson, err := readFile()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Error when reading composer.json file:", err)
 	}
 
-	log.Println(composerJson)
+	processor.Process(composerJson)
 }
 
 func readFile() (composer.ComposerJson, error) {
