@@ -7,12 +7,17 @@
         }
     ],
     "require": {
-        "chapterzero/package-a": "dev-master"
+        "chapterzero/package-a": "dev-master",
+        "chapterzero/package-b": "dev-master"
     },
     "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/chapterzero/package-a"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/chapterzero/package-b"
         }
     ]
 }

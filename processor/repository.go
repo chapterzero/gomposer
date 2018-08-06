@@ -28,18 +28,14 @@ func resolvePackage(fqPackageName string, composerJson composer.ComposerJson) (p
 			continue
 		}
 
-		pathStriped := url.Path
-		if pathStriped[0] == '/' {
-			// remove leading slash in front
-			pathStriped = pathStriped[1:len(pathStriped)]
-		}
+		guessedPackageName := getPackageNameFromPath(url.Path)
 
-		if (pathStriped == fqPackageName) {
+		if (guessedPackageName == fqPackageName) {
 			return createProviderFromHost(url.Host)
 		}
 	}
 
-	return emptyProvider, errors.New("Could not find provider for: " + fqPackageName)
+	return emptyProvider, errors.New("Could not find provider for: " + fqPackageName + " (forgot to add vcs?)")
 }
 
 func createProviderFromHost(host string) (provider.Provider, error) {
@@ -51,4 +47,16 @@ func createProviderFromHost(host string) (provider.Provider, error) {
 
 	var emptyProvider provider.Provider
 	return emptyProvider, errors.New("Could not find provider for: " + host)
+}
+
+func getPackageNameFromPath(urlPath string) (packageName string) {
+	if urlPath[0] == '/' {
+		// remove leading slash in front
+		urlPath = urlPath[1:len(urlPath)]
+	}
+
+	// some VCS url may have .git at the end of URL
+	urlPath = strings.TrimSuffix(urlPath, ".git")
+
+	return urlPath
 }
