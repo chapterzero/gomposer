@@ -8,7 +8,7 @@ import (
 func Process(composerJson composer.ComposerJson, vendorDirectory string) {
 	dependencies := dependencyBuilder(composerJson)
 	for _, dependency := range dependencies {
-		log.Println(dependency.Provider.GetApiUrl(dependency.FqPackageName))
+		downloadPackage(dependency.FqPackageName, dependency.Provider, dependency.Version, "govendor")
 	}
 }
 

@@ -9,5 +9,7 @@ const tempDirectory = "/tmp"
 
 func downloadPackage(packageName string, provider provider.Provider, version Version, vendorDirectory string) {
 	downloadUrl := provider.GetDownloadUrl(packageName, version.Value)
-	log.Println(downloadUrl)
+}
+
+func downloadAndUnzip(url string) {
 }
