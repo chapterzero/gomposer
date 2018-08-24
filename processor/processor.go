@@ -7,9 +7,7 @@ import (
 
 func Process(composerJson composer.ComposerJson, vendorDirectory string) {
 	dependencies := dependencyBuilder(composerJson)
-	for _, dependency := range dependencies {
-		downloadPackage(dependency.FqPackageName, dependency.Provider, dependency.Version, "govendor")
-	}
+	downloadPackagesParallel(dependencies, vendorDirectory)
 }
 
 // required package may have another requirement
