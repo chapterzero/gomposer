@@ -10,6 +10,7 @@
         "chapterzero/package-a": "dev-master",
         "chapterzero/package-b": "dev-master"
     },
+    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "vcs",
@@ -18,6 +19,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/chapterzero/package-b"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/chapterzero/package-c"
         }
     ]
 }

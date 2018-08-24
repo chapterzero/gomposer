@@ -12,6 +12,7 @@ import (
 	"time"
 	"archive/zip"
 	"path/filepath"
+	"sync"
 )
 
 const tempDirectory = "/tmp"
@@ -27,7 +28,10 @@ type DownloadResult struct {
 
 func downloadPackagesParallel(dependencies []Dependency, vendorDirectory string) {
 	d := make(chan DownloadResult)
+	var wg sync.WaitGroup
+	wg.Add(len(dependencies))
 	rand.Seed(time.Now().UTC().UnixNano())
+
 	for _, dependency := range dependencies {
 		go func(dependency Dependency) {
 			filePath, err := downloadPackage(dependency.FqPackageName, dependency.Provider, dependency.Version, vendorDirectory)
@@ -37,24 +41,34 @@ func downloadPackagesParallel(dependencies []Dependency, vendorDirectory string)
 				filePath: filePath,
 				dependency: dependency,
 			}
+			log.Println("Download complete")
+			if downloadResult.err != nil {
+				close(d)
+				log.Fatalln(downloadResult.err)
+			}
+			log.Println("Unzipping...")
+			_, err = unzipPackage(downloadResult.filePath, getPackageVendorDir(
+				downloadResult.dependency.FqPackageName,
+				vendorDirectory,
+			))
+			if err != nil {
+				close(d)
+				log.Fatalln("Error while unzipping package ", err)
+			}
+
+			deleteFile(downloadResult.filePath)
+
 			d <- downloadResult
+			wg.Done()
 		}(dependency)
 	}
 
-	for range dependencies {
-		result := <- d
-		if result.err != nil {
-			close(d)
-			log.Fatalln(result.err)
-		}
-		log.Println("Unzipping...")
-		_, err := unzipPackage(result.filePath, getPackageVendorDir(result.dependency.FqPackageName, vendorDirectory))
-		if result.err != nil {
-			close(d)
-			log.Fatalln("Error while unzipping package ", err)
-		}
+	go func() {
+		wg.Wait()
+		close(d)
+	}()
 
-		deleteFile(result.filePath)
+	for range d {
 	}
 }
 
@@ -62,7 +76,6 @@ func downloadPackage(packageName string, provider provider.Provider, version Ver
 	downloadUrl := provider.GetDownloadUrl(packageName, version.Value)
 	filepath := fmt.Sprintf("%v/%v_%v.zip", tempDirectory, rand.Intn(300), strings.Replace(packageName, "/", "_", -1))
 	log.Println("Downloading package ", downloadUrl)
-	log.Println(filepath)
 
 	// Create the file
     out, err := os.Create(filepath)
